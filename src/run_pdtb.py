@@ -491,13 +491,11 @@ def main():
     parser.add_argument('--intermediate_weights', type=str, default=None,
                         help="Load model state after intermediate task training")
     parser.add_argument('--tb_logdir', type=str, default="../dcc/runs_tb/")
-    parser.add_argument('--cuda_no', type=int, default=0)
     parser.add_argument('--n_gpu', type=int, default=-1)
     parser.add_argument('--deterministic', action='store_true', help='Sets the CuDNN deterministic flag')
 
     args = parser.parse_args()
 
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda_no)
     if args.deterministic:
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
@@ -522,7 +520,6 @@ def main():
             args.n_gpu = torch.cuda.device_count()
         if torch.cuda.is_available():
             torch.cuda.set_device(0)
-
     else:  # Initializes the distributed backend which will take care of sychronizing nodes/GPUs
         torch.cuda.set_device(args.local_rank)
         device = torch.device("cuda", args.local_rank)
